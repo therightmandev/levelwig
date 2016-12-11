@@ -1,0 +1,6 @@
+{% extends 'base_admin.jinja2' %}
+{% import 'macros.jinja2' as macros %}
+
+{% block body %}
+	{{ macros.editor("/admin/post/%d/edit" % post.id, post.title, post.date, post.username, post.body, "save") }}
+{% endblock body %}
