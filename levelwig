@@ -266,7 +266,7 @@ def admin_generate(request, username):
 
 @authed
 def admin_theme_edit(request, username):
-	return Response(code=303, location='/admin')
+	return Response.render(request, 'theme.jinja2', {})
 
 disallowed_chars_re = re.compile(r'[^\w\s-]')
 dash_chars_re = re.compile(r'[-\s]+')
