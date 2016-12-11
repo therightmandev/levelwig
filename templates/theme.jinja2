@@ -1,5 +1,9 @@
 {% extends 'base_admin.jinja2' %}
 
 {% block body %}
-	<p>oioi</p>
+	<h3>New Theme</h3>
+	<form method="post" action="/admin/media/upload" enctype="multipart/form-data">
+		<input type="file" name="file">
+		<input type="submit">
+	</form>
 {% endblock body %}

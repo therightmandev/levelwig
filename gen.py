@@ -49,8 +49,9 @@ def generate(app):
 			reldir = absdir[len(css_dir):]
 			relname, _ = path.splitext(path.join(reldir, filename))
 			css_path = path.join(public_dir, 'css', relname) + '.css'
-			with open(ccss_path, 'r') as ccss, open(css_path, 'w') as css:
-				css.write(cleancss.convert(ccss))
+			if not path.exists(css_path):
+				with open(ccss_path, 'r') as ccss, open(css_path, 'w') as css:
+					css.write(cleancss.convert(ccss))
 
 def get_feed(md):
 	url = db.get_setting('url')
