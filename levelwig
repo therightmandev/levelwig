@@ -54,6 +54,7 @@ def routes():
 		('POST', '/admin/media/upload', admin_media_upload),
 		('POST', '/admin/media/delete', admin_media_delete),
 		('GET', '/admin/generate', admin_generate),
+		('GET', '/admin/theme', admin_theme_edit)
 	]
 
 def root(request):
@@ -261,6 +262,10 @@ def admin_media_delete(request, username):
 @authed
 def admin_generate(request, username):
 	gen.generate(app)
+	return Response(code=303, location='/admin')
+
+@authed
+def admin_theme_edit(request, username):
 	return Response(code=303, location='/admin')
 
 disallowed_chars_re = re.compile(r'[^\w\s-]')
