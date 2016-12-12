@@ -55,7 +55,7 @@ def routes():
 		('POST', '/admin/media/delete', admin_media_delete),
 		('GET', '/admin/generate', admin_generate),
 		('GET', '/admin/theme', admin_theme_edit),
-		('POST', 'admin/theme', admin_theme_upload)
+		('POST', '/admin/theme', admin_theme_upload)
 	]
 
 def root(request):
@@ -79,8 +79,10 @@ def media(request, relpath):
 	return Response(gen_file(), content_type=mimetypes.guess_type(relpath)[0])
 
 def css(request, relpath):
+	theme = db.get_setting('theme')
+	theme_dir = path.join(css_dir, theme)
 	name, _ = path.splitext(relpath)
-	ccss_path = path.join(css_dir, name) + '.ccss'
+	ccss_path = path.join(theme_dir, name) + '.ccss'
 	try:
 		with open(ccss_path, 'r') as f:
 			return Response(cleancss.convert(f), content_type='text/css')
@@ -271,7 +273,8 @@ def admin_theme_edit(request, username):
 
 @authed
 def admin_theme_upload(request, username):
-	new_css = request.body['file']
+	theme_name = request.body['theme']
+	db.update_setting('theme', theme_name.decode('utf-8')) #TODO: validate form data	
 	return Response(code=303, location='/admin/theme')
 
 disallowed_chars_re = re.compile(r'[^\w\s-]')

@@ -1,0 +1,28 @@
+article:
+	&.draft > blockquote:
+		color: #777
+
+	&.fullpage:
+		height: 90% // for form.editor
+
+	div.admin:
+		float: right
+		text-align: right
+
+form.editor:
+	height: 100% // for textarea
+	display: flex
+	flex-direction: column
+
+	textarea:
+		flex-grow: 1
+		width: 100%
+		min-height: 15em
+
+form.delete:
+	display: inline
+
+@media (max-width: 900px):
+	header div:
+		flex-direction: row
+		justify-content: space-around

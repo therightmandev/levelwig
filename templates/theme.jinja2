@@ -2,8 +2,11 @@
 
 {% block body %}
 	<h3>New Theme</h3>
-	<form method="post" action="/admin/media/upload" enctype="multipart/form-data">
-		<input type="file" name="file">
+	<form method="post" action="/admin/theme" enctype="multipart/form-data">
+		<select name="theme">
+			<option value="night">Night</option>
+			<option value="day">Day</option>
+		</select>
 		<input type="submit">
 	</form>
 {% endblock body %}

@@ -43,15 +43,16 @@ def generate(app):
 				f.write(buf)
 
 	os.mkdir(path.join(public_dir, 'css'))
-	for absdir, _, filenames in os.walk(css_dir):
+	theme = db.get_setting('theme')
+	theme_dir = path.join(css_dir, theme)
+	for absdir, _, filenames in os.walk(theme_dir):
 		for filename in filenames:
 			ccss_path = path.join(absdir, filename)
-			reldir = absdir[len(css_dir):]
+			reldir = absdir[len(theme_dir):]
 			relname, _ = path.splitext(path.join(reldir, filename))
 			css_path = path.join(public_dir, 'css', relname) + '.css'
-			if not path.exists(css_path):
-				with open(ccss_path, 'r') as ccss, open(css_path, 'w') as css:
-					css.write(cleancss.convert(ccss))
+			with open(ccss_path, 'r') as ccss, open(css_path, 'w') as css:
+				css.write(cleancss.convert(ccss))
 
 def get_feed(md):
 	url = db.get_setting('url')
