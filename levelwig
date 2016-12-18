@@ -54,7 +54,8 @@ def routes():
 		('POST', '/admin/media/upload', admin_media_upload),
 		('POST', '/admin/media/delete', admin_media_delete),
 		('GET', '/admin/generate', admin_generate),
-		('GET', '/admin/theme', admin_theme_edit)
+		('GET', '/admin/theme', admin_theme_edit),
+		('POST', '/user/theme', user_theme_upload)
 	]
 
 def root(request):
@@ -78,6 +79,7 @@ def media(request, relpath):
 	return Response(gen_file(), content_type=mimetypes.guess_type(relpath)[0])
 
 def css(request, relpath):
+	#TODO: get theme cookie and choose theme based on that
 	theme = db.get_setting('theme')
 	theme_dir = path.join(css_dir, theme)
 	name, _ = path.splitext(relpath)
@@ -270,10 +272,9 @@ def admin_generate(request, username):
 def admin_theme_edit(request, username):
 	return Response.render(request, 'theme.jinja2', {})
 
-@authed
-def admin_theme_upload(request, username):
+def user_theme_upload(request, username):
 	theme_name = request.body['theme']
-	db.update_setting('theme', theme_name.decode('utf-8')) #TODO: validate form data	
+	#TODO: validate form data, send cookie to save the theme
 	return Response(code=303, location='/admin/theme')
 
 disallowed_chars_re = re.compile(r'[^\w\s-]')

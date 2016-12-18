@@ -43,6 +43,7 @@ def generate(app):
 				f.write(buf)
 
 	os.mkdir(path.join(public_dir, 'css'))
+	#TODO: generate all the themes
 	theme = db.get_setting('theme')
 	theme_dir = path.join(css_dir, theme)
 	for absdir, _, filenames in os.walk(theme_dir):
