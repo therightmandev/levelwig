@@ -54,8 +54,7 @@ def routes():
 		('POST', '/admin/media/upload', admin_media_upload),
 		('POST', '/admin/media/delete', admin_media_delete),
 		('GET', '/admin/generate', admin_generate),
-		('GET', '/admin/theme', admin_theme_edit),
-		('POST', '/admin/theme', admin_theme_upload)
+		('GET', '/admin/theme', admin_theme_edit)
 	]
 
 def root(request):
