@@ -54,7 +54,7 @@ def routes():
 		('POST', '/admin/media/upload', admin_media_upload),
 		('POST', '/admin/media/delete', admin_media_delete),
 		('GET', '/admin/generate', admin_generate),
-		('GET', '/admin/theme', admin_theme_edit),
+		('GET', '/user/theme', user_theme_edit),
 		('POST', '/user/theme', user_theme_upload)
 	]
 
@@ -268,14 +268,15 @@ def admin_generate(request, username):
 	gen.generate(app)
 	return Response(code=303, location='/admin')
 
-@authed
-def admin_theme_edit(request, username):
+def user_theme_edit(request):
 	return Response.render(request, 'theme.jinja2', {})
 
-def user_theme_upload(request, username):
+def user_theme_upload(request):
 	theme_name = request.body['theme']
 	#TODO: validate form data, send cookie to save the theme
-	return Response(code=303, location='/admin/theme')
+	response = Response(code=303, location='/user/theme')
+	response.set_cookie('theme', theme_name)
+	return Response
 
 disallowed_chars_re = re.compile(r'[^\w\s-]')
 dash_chars_re = re.compile(r'[-\s]+')
