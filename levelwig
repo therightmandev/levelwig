@@ -22,6 +22,7 @@ template_dir = path.join(levelwig_dir, 'templates')
 css_dir = path.join(levelwig_dir, 'css')
 media_dir = path.join(levelwig_dir, 'media')
 mode = 'prod'
+default_theme = 'night'
 
 LOGIN_TIME = datetime.timedelta(days=30)
 
@@ -83,15 +84,20 @@ def css(request, relpath):
 	#TODO: remove 'theme' setting from db
 	#theme = request.get_secure_cookie('theme', None)
 	theme = request.cookies.get('theme')
-	print('css:', theme)
 	if theme is None:
 		theme = 'night'
+	else:
+		theme = theme.value
+	print('css:', theme, type(theme))
 	theme_dir = path.join(css_dir, theme)
 	name, _ = path.splitext(relpath)
 	ccss_path = path.join(theme_dir, name) + '.ccss'
 	try:
 		with open(ccss_path, 'r') as f:
-			return Response(cleancss.convert(f), content_type='text/css')
+			response = Response(cleancss.convert(f), content_type='text/css')
+			#TODO: fix this:
+			#response.set_cookie('theme', theme, path='/')
+			return response
 	except FileNotFoundError:
 		raise HTTPException(404, 'ccss file not found')
 
@@ -277,11 +283,12 @@ def user_theme_edit(request):
 	return Response.render(request, 'theme.jinja2', {})
 
 def user_theme_upload(request):
-	theme_name = request.body.get('theme', 'night')
+	theme_name = request.body.get('theme', default_theme).decode()
 	print('theme received:', theme_name)
 	#TODO: validate form data
 	response = Response(code=303, location='/user/theme')
-	response.set_cookie('theme', theme_name)
+	#TODO: set max_age
+	response.set_cookie('theme', theme_name, path='/')
 	return response
 
 disallowed_chars_re = re.compile(r'[^\w\s-]')
