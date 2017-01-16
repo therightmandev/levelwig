@@ -22,7 +22,10 @@ template_dir = path.join(levelwig_dir, 'templates')
 css_dir = path.join(levelwig_dir, 'css')
 media_dir = path.join(levelwig_dir, 'media')
 mode = 'prod'
-default_theme = 'night'
+
+#TODO: add these to db:
+default_theme = b'night'
+available_themes = ['night', 'day']
 
 LOGIN_TIME = datetime.timedelta(days=30)
 THEME_TIME = datetime.timedelta(days=365)
@@ -56,8 +59,8 @@ def routes():
 		('POST', '/admin/media/upload', admin_media_upload),
 		('POST', '/admin/media/delete', admin_media_delete),
 		('GET', '/admin/generate', admin_generate),
-		('GET', '/user/theme', user_theme_edit),
-		('POST', '/user/theme', user_theme_upload)
+		('GET', '/user/theme', change_theme),
+		('POST', '/user/theme', change_theme_form)
 	]
 
 def root(request):
@@ -86,7 +89,6 @@ def css(request, relpath):
 		theme = 'night'
 	else:
 		theme = theme.value
-	print('css:', theme, type(theme))
 	theme_dir = path.join(css_dir, theme)
 	name, _ = path.splitext(relpath)
 	ccss_path = path.join(theme_dir, name) + '.ccss'
@@ -275,15 +277,15 @@ def admin_generate(request, username):
 	gen.generate(app)
 	return Response(code=303, location='/admin')
 
-def user_theme_edit(request):
+def change_theme(request):
 	return Response.render(request, 'theme.jinja2', {})
 
-def user_theme_upload(request):
+def change_theme_form(request):
 	theme_name = request.body.get('theme', default_theme).decode()
-	print('theme received:', theme_name)
-	#TODO: validate form data
 	response = Response(code=303, location='/user/theme')
-	response.set_cookie('theme', theme_name, path='/', max_age=THEME_TIME)
+	if theme_name in available_themes:
+		response.set_cookie('theme', theme_name, path='/', max_age=THEME_TIME)
+	#TODO: validate form data
 	return response
 
 disallowed_chars_re = re.compile(r'[^\w\s-]')
